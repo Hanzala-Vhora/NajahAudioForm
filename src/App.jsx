@@ -987,28 +987,58 @@ const AdminDashboard = ({ t }) => {
                 key={item.id}
                 className="group p-6 rounded-2xl bg-surface/20 border border-white/5 hover:border-primary/30 transition-all"
               >
-                <div className="flex flex-col md:flex-row justify-between gap-6">
-                  <div className="flex gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center border border-white/5">
+                <div className="flex flex-col lg:flex-row justify-between gap-6">
+                  <div className="flex flex-1 gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center border border-white/5 shrink-0">
                       <span className="font-bold text-primary">{item.name?.charAt(0)}</span>
                     </div>
-                    <div>
-                      <div className="flex items-center gap-3 mb-1">
-                        <h3 className="font-bold text-lg">{item.name}</h3>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-wrap items-center gap-3 mb-2">
+                        <h3 className="font-bold text-lg truncate">{item.name}</h3>
                         <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest ${item.formType === 'ANALYZE' ? 'bg-primary/20 text-primary' : 'bg-secondary/20 text-secondary'}`}>
                           {item.formType}
                         </span>
+                        {item.analyzeSocial && (
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                            Social Audit
+                          </span>
+                        )}
+                        <span className="text-[10px] text-gray-600 font-mono">ID: {item.id}</span>
                       </div>
-                      <div className="flex flex-wrap gap-4 text-sm text-gray-400">
-                        <div className="flex items-center gap-1.5"><Mail className="w-3.5 h-3.5" /> {item.email}</div>
-                        <div className="flex items-center gap-1.5"><Phone className="w-3.5 h-3.5" /> {item.phone || 'N/A'}</div>
-                        <div className="flex items-center gap-1.5"><Building2 className="w-3.5 h-3.5" /> {item.company}</div>
+                      
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-2 gap-x-6 text-sm text-gray-400">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <Mail className="w-3.5 h-3.5 shrink-0 text-gray-600" /> 
+                          <span className="truncate">{item.email}</span>
+                        </div>
+                        <div className="flex items-center gap-2 min-w-0">
+                          <Phone className="w-3.5 h-3.5 shrink-0 text-gray-600" /> 
+                          <span className="truncate">{item.phone || 'No Phone'}</span>
+                        </div>
+                        <div className="flex items-center gap-2 min-w-0">
+                          <Building2 className="w-3.5 h-3.5 shrink-0 text-gray-600" /> 
+                          <span className="truncate">{item.company || 'No Company'}</span>
+                        </div>
+                        {item.designation && (
+                          <div className="flex items-center gap-2 min-w-0">
+                            <Briefcase className="w-3.5 h-3.5 shrink-0 text-gray-600" /> 
+                            <span className="truncate">{item.designation}</span>
+                          </div>
+                        )}
+                        {item.website && (
+                          <div className="flex items-center gap-2 min-w-0">
+                            <Globe2 className="w-3.5 h-3.5 shrink-0 text-gray-600" /> 
+                            <a href={item.website} target="_blank" rel="noopener noreferrer" className="truncate hover:text-primary transition-colors">
+                              {item.website.replace(/^https?:\/\//, '')}
+                            </a>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
                   
-                  <div className="flex flex-col md:items-end justify-between gap-4">
-                    <div className="text-xs text-gray-500 uppercase tracking-widest">
+                  <div className="flex flex-row lg:flex-col items-center lg:items-end justify-between shrink-0">
+                    <div className="text-[10px] text-gray-500 uppercase tracking-widest font-medium bg-white/5 px-3 py-1 rounded-full lg:bg-transparent lg:px-0 lg:py-0">
                       {new Date(item.createdAt).toLocaleDateString('en-US', { 
                         month: 'short', 
                         day: 'numeric', 
@@ -1018,13 +1048,8 @@ const AdminDashboard = ({ t }) => {
                       })}
                     </div>
                     <div className="flex gap-2">
-                      {item.website && (
-                        <a href={item.website} target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-all">
-                          <Globe2 className="w-4 h-4" />
-                        </a>
-                      )}
-                      <button className="px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-xs font-bold transition-all">
-                        Details
+                      <button className="px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-xs font-bold transition-all border border-white/5 hover:border-white/10">
+                        View Details
                       </button>
                     </div>
                   </div>
@@ -1032,13 +1057,16 @@ const AdminDashboard = ({ t }) => {
 
                 {item.formType === 'ANALYZE' && item.platforms?.length > 0 && (
                   <div className="mt-6 pt-6 border-t border-white/5">
-                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 mb-3">Audit Channels</p>
+                    <div className="flex items-center gap-2 mb-3">
+                      <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500">Audit Channels</p>
+                      <div className="h-px flex-1 bg-white/5" />
+                    </div>
                     <div className="flex flex-wrap gap-2">
                       {item.platforms.map(p => (
-                        <div key={p} className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 border border-white/5 text-xs">
-                          <span className="text-primary font-bold uppercase">{p}</span>
+                        <div key={p} className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs hover:border-primary/30 transition-colors">
+                          <span className="text-primary font-bold uppercase tracking-tighter">{p}</span>
                           {item.platformUrls?.[p] && (
-                            <a href={item.platformUrls[p]} target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-white transition-colors">
+                            <a href={item.platformUrls[p]} target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-white transition-colors" title={item.platformUrls[p]}>
                               <ExternalLink className="w-3 h-3" />
                             </a>
                           )}
@@ -1050,8 +1078,13 @@ const AdminDashboard = ({ t }) => {
 
                 {item.message && (
                   <div className="mt-6 pt-6 border-t border-white/5">
-                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 mb-2">Message</p>
-                    <p className="text-sm text-gray-400 leading-relaxed italic">"{item.message}"</p>
+                    <div className="flex items-center gap-2 mb-2">
+                      <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500">Message</p>
+                      <div className="h-px flex-1 bg-white/5" />
+                    </div>
+                    <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5">
+                      <p className="text-sm text-gray-400 leading-relaxed italic">"{item.message}"</p>
+                    </div>
                   </div>
                 )}
               </motion.div>
