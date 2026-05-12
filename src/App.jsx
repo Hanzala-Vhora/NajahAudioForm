@@ -104,7 +104,10 @@ const translations = {
     footerPrivacy: "Privacy Policy",
     footerTerms: "Terms of Service",
     footerRights: "© 2024 Najah Media. All rights reserved.",
-    footerDesign: "Designed with Excellence."
+    footerDesign: "Designed with Excellence.",
+    socialToggleTitle: "Analyze Social Media Presence?",
+    socialToggleDesc: "Select to audit your platforms",
+    fieldPlatformUrls: "Provide Platform URLs"
   },
   ar: {
     navHome: "الرئيسية",
@@ -180,7 +183,10 @@ const translations = {
     footerPrivacy: "سياسة الخصوصية",
     footerTerms: "شروط الخدمة",
     footerRights: "© 2024 Najah Media. جميع الحقوق محفوظة.",
-    footerDesign: "صمم بتميز."
+    footerDesign: "صمم بتميز.",
+    socialToggleTitle: "هل ترغب في تحليل تواجدك على وسائل التواصل الاجتماعي؟",
+    socialToggleDesc: "حدد المنصات التي ترغب في تدقيقها",
+    fieldPlatformUrls: "أدخل روابط المنصات"
   }
 };
 
@@ -328,7 +334,9 @@ const SignupForm = ({ t }) => {
     company: '',
     designation: '',
     website: '',
-    platforms: []
+    analyzeSocial: false,
+    platforms: [],
+    platformUrls: {}
   });
 
   const platforms = [
@@ -341,12 +349,25 @@ const SignupForm = ({ t }) => {
   ];
 
   const togglePlatform = (id) => {
-    setFormData(prev => ({
-      ...prev,
-      platforms: prev.platforms.includes(id) 
+    setFormData(prev => {
+      const isActive = prev.platforms.includes(id);
+      const newPlatforms = isActive 
         ? prev.platforms.filter(p => p !== id) 
-        : [...prev.platforms, id]
-    }));
+        : [...prev.platforms, id];
+      
+      const newUrls = { ...prev.platformUrls };
+      if (isActive) {
+        delete newUrls[id];
+      } else {
+        newUrls[id] = '';
+      }
+
+      return {
+        ...prev,
+        platforms: newPlatforms,
+        platformUrls: newUrls
+      };
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -512,30 +533,103 @@ const SignupForm = ({ t }) => {
           </div>
         </div>
 
-        <div className="md:col-span-2 space-y-3 sm:space-y-4 pt-2 sm:pt-4">
-          <label className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-gray-500 ms-1">{t('fieldPlatforms')}</label>
-          <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-2 sm:gap-3">
-            {platforms.map((p) => {
-              const Icon = p.icon;
-              const isActive = formData.platforms.includes(p.id);
-              return (
-                <button
-                  key={p.id}
-                  type="button"
-                  onClick={() => togglePlatform(p.id)}
-                  className={`flex flex-col items-center gap-1.5 sm:gap-2 p-2 sm:p-3 rounded-lg sm:rounded-xl border transition-all ${
-                    isActive 
-                      ? 'bg-primary/20 border-primary shadow-lg shadow-primary/10' 
-                      : 'bg-white/[0.03] border-white/5 hover:border-white/20'
-                  }`}
-                  disabled={isSubmitting}
-                >
-                  <Icon className={`w-4 h-4 sm:w-5 sm:h-5 ${isActive ? 'text-primary' : 'text-gray-400'}`} />
-                  <span className={`text-[10px] font-bold uppercase tracking-widest ${isActive ? 'text-white' : 'text-gray-500'}`}>{p.label}</span>
-                </button>
-              );
-            })}
+        <div className="md:col-span-2 space-y-4 pt-2 sm:pt-4">
+          <div className="flex items-center justify-between p-4 rounded-2xl bg-white/[0.03] border border-white/10">
+            <div>
+              <h4 className="text-sm font-semibold text-white">{t('socialToggleTitle')}</h4>
+              <p className="text-[10px] text-gray-500 uppercase tracking-widest mt-1">{t('socialToggleDesc')}</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setFormData(prev => ({ ...prev, analyzeSocial: !prev.analyzeSocial }))}
+              className={`relative w-12 h-6 rounded-full transition-colors ${formData.analyzeSocial ? 'bg-primary' : 'bg-gray-700'}`}
+            >
+              <motion.div
+                animate={{ x: formData.analyzeSocial ? 26 : 2 }}
+                className="absolute top-1 w-4 h-4 rounded-full bg-white shadow-sm"
+              />
+            </button>
           </div>
+
+          <AnimatePresence>
+            {formData.analyzeSocial && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                className="overflow-hidden space-y-4"
+              >
+                <label className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-gray-500 ms-1">{t('fieldPlatforms')}</label>
+                <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-2 sm:gap-3">
+                  {platforms.map((p) => {
+                    const Icon = p.icon;
+                    const isActive = formData.platforms.includes(p.id);
+                    return (
+                      <button
+                        key={p.id}
+                        type="button"
+                        onClick={() => togglePlatform(p.id)}
+                        className={`flex flex-col items-center gap-1.5 sm:gap-2 p-2 sm:p-3 rounded-lg sm:rounded-xl border transition-all ${
+                          isActive 
+                            ? 'bg-primary/20 border-primary shadow-lg shadow-primary/10' 
+                            : 'bg-white/[0.03] border-white/5 hover:border-white/20'
+                        }`}
+                        disabled={isSubmitting}
+                      >
+                        <Icon className={`w-4 h-4 sm:w-5 sm:h-5 ${isActive ? 'text-primary' : 'text-gray-400'}`} />
+                        <span className={`text-[10px] font-bold uppercase tracking-widest ${isActive ? 'text-white' : 'text-gray-500'}`}>{p.label}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Platform URL Inputs */}
+                <AnimatePresence>
+                  {formData.platforms.length > 0 && (
+                    <motion.div 
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="space-y-3 mt-4"
+                    >
+                      <label className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-gray-500 ms-1">{t('fieldPlatformUrls')}</label>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        {formData.platforms.map((platformId) => {
+                          const platform = platforms.find(p => p.id === platformId);
+                          const Icon = platform.icon;
+                          return (
+                            <motion.div 
+                              layout
+                              initial={{ opacity: 0, x: -10 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              key={platformId}
+                              className="relative"
+                            >
+                              <div className="absolute start-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                                <Icon className="w-3.5 h-3.5 text-primary" />
+                              </div>
+                              <input 
+                                type="url" 
+                                placeholder={`${platform.label} URL`}
+                                className="w-full ps-12 pe-4 py-3 rounded-xl bg-white/[0.05] border border-white/10 focus:border-primary/50 focus:outline-none transition-all placeholder:text-gray-600 text-sm"
+                                value={formData.platformUrls[platformId] || ''}
+                                onChange={(e) => setFormData(prev => ({
+                                  ...prev,
+                                  platformUrls: { ...prev.platformUrls, [platformId]: e.target.value }
+                                }))}
+                                required
+                                disabled={isSubmitting}
+                              />
+                            </motion.div>
+                          );
+                        })}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         <div className="md:col-span-2 pt-4 sm:pt-8">
