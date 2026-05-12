@@ -4,6 +4,7 @@
  */
 
 import { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   BarChart3, 
@@ -24,7 +25,15 @@ import {
   Youtube,
   Menu as MenuIcon,
   X,
-  Music as Tiktok
+  Music as Tiktok,
+  Database,
+  Lock,
+  Download,
+  Search,
+  ArrowLeft,
+  RefreshCcw,
+  ExternalLink,
+  Table as TableIcon
 } from 'lucide-react';
 
 // --- Translations ---
@@ -835,15 +844,230 @@ const Counter = ({ target, duration = 2 }) => {
   return <>{count}</>;
 };
 
-// --- Main App ---
+const AdminDashboard = ({ t }) => {
+  const [password, setPassword] = useState('');
+  const [isAuthorized, setIsAuthorized] = useState(false);
+  const [data, setData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
-export default function App() {
-  const [lang, setLang] = useState('en');
-
-  const t = (key) => {
-    return translations[lang][key] || translations.en[key];
+  const handleLogin = (e) => {
+    e.preventDefault();
+    if (password === 'Najah@123') {
+      setIsAuthorized(true);
+      fetchData();
+    } else {
+      alert('Incorrect password');
+    }
   };
 
+  const fetchData = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await fetch('https://api.thewellnesslab.ae/api/najah/data');
+      const result = await response.json();
+      if (result.success) {
+        setData(result.data);
+      } else {
+        setError(result.message || 'Failed to fetch data');
+      }
+    } catch (err) {
+      setError('Connection error. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const filteredData = data.filter(item => 
+    item.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    item.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    item.company?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  if (!isAuthorized) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-6">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="w-full max-w-md p-8 rounded-[2rem] bg-surface/20 border border-white/10 backdrop-blur-xl shadow-2xl"
+        >
+          <div className="w-16 h-16 rounded-2xl bg-primary/20 flex items-center justify-center mx-auto mb-6">
+            <Lock className="w-8 h-8 text-primary" />
+          </div>
+          <h2 className="text-2xl font-display font-bold text-center mb-2">Admin Access</h2>
+          <p className="text-gray-500 text-center text-sm mb-8">Enter password to view submissions</p>
+          
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div className="relative">
+              <Lock className="absolute start-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <input 
+                type="password" 
+                placeholder="Enter Password"
+                className="w-full ps-12 pe-4 py-4 rounded-xl bg-white/[0.05] border border-white/10 focus:border-primary/50 focus:outline-none transition-all"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+            <button 
+              type="submit"
+              className="w-full py-4 rounded-xl bg-primary text-white font-bold hover:shadow-lg hover:shadow-primary/20 transition-all active:scale-[0.98]"
+            >
+              Login to Dashboard
+            </button>
+            <a href="#" className="block text-center text-xs text-gray-500 hover:text-white transition-colors mt-4">
+              Return to Website
+            </a>
+          </form>
+        </motion.div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-background text-white p-6 md:p-12">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <a href="#" className="p-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
+                <ArrowLeft className="w-4 h-4" />
+              </a>
+              <span className="text-primary font-bold uppercase tracking-widest text-xs">Management Portal</span>
+            </div>
+            <h1 className="text-3xl md:text-5xl font-display font-bold">Leads Dashboard</h1>
+          </div>
+          
+          <div className="flex items-center gap-4 w-full md:w-auto">
+            <div className="relative flex-1 md:w-64">
+              <Search className="absolute start-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+              <input 
+                type="text" 
+                placeholder="Search leads..."
+                className="w-full ps-11 pe-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-primary/30 focus:outline-none transition-all text-sm"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+            <button 
+              onClick={fetchData}
+              disabled={isLoading}
+              className="p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all disabled:opacity-50"
+            >
+              <RefreshCcw className={`w-5 h-5 ${isLoading ? 'animate-spin' : ''}`} />
+            </button>
+          </div>
+        </div>
+
+        {error && (
+          <div className="p-4 mb-8 rounded-xl bg-red-500/10 border border-red-500/20 text-red-500 text-sm flex items-center gap-3">
+            <X className="w-4 h-4" />
+            {error}
+          </div>
+        )}
+
+        <div className="grid grid-cols-1 gap-4">
+          {isLoading ? (
+            [1, 2, 3].map(i => (
+              <div key={i} className="h-24 rounded-2xl bg-white/[0.02] border border-white/5 animate-pulse" />
+            ))
+          ) : filteredData.length === 0 ? (
+            <div className="py-20 text-center rounded-[2rem] border border-dashed border-white/10">
+              <Database className="w-12 h-12 text-gray-600 mx-auto mb-4" />
+              <p className="text-gray-500">No submissions found</p>
+            </div>
+          ) : (
+            filteredData.map((item) => (
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                key={item.id}
+                className="group p-6 rounded-2xl bg-surface/20 border border-white/5 hover:border-primary/30 transition-all"
+              >
+                <div className="flex flex-col md:flex-row justify-between gap-6">
+                  <div className="flex gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center border border-white/5">
+                      <span className="font-bold text-primary">{item.name?.charAt(0)}</span>
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-3 mb-1">
+                        <h3 className="font-bold text-lg">{item.name}</h3>
+                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest ${item.formType === 'ANALYZE' ? 'bg-primary/20 text-primary' : 'bg-secondary/20 text-secondary'}`}>
+                          {item.formType}
+                        </span>
+                      </div>
+                      <div className="flex flex-wrap gap-4 text-sm text-gray-400">
+                        <div className="flex items-center gap-1.5"><Mail className="w-3.5 h-3.5" /> {item.email}</div>
+                        <div className="flex items-center gap-1.5"><Phone className="w-3.5 h-3.5" /> {item.phone || 'N/A'}</div>
+                        <div className="flex items-center gap-1.5"><Building2 className="w-3.5 h-3.5" /> {item.company}</div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="flex flex-col md:items-end justify-between gap-4">
+                    <div className="text-xs text-gray-500 uppercase tracking-widest">
+                      {new Date(item.createdAt).toLocaleDateString('en-US', { 
+                        month: 'short', 
+                        day: 'numeric', 
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })}
+                    </div>
+                    <div className="flex gap-2">
+                      {item.website && (
+                        <a href={item.website} target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-all">
+                          <Globe2 className="w-4 h-4" />
+                        </a>
+                      )}
+                      <button className="px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-xs font-bold transition-all">
+                        Details
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {item.formType === 'ANALYZE' && item.platforms?.length > 0 && (
+                  <div className="mt-6 pt-6 border-t border-white/5">
+                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 mb-3">Audit Channels</p>
+                    <div className="flex flex-wrap gap-2">
+                      {item.platforms.map(p => (
+                        <div key={p} className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 border border-white/5 text-xs">
+                          <span className="text-primary font-bold uppercase">{p}</span>
+                          {item.platformUrls?.[p] && (
+                            <a href={item.platformUrls[p]} target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-white transition-colors">
+                              <ExternalLink className="w-3 h-3" />
+                            </a>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {item.message && (
+                  <div className="mt-6 pt-6 border-t border-white/5">
+                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 mb-2">Message</p>
+                    <p className="text-sm text-gray-400 leading-relaxed italic">"{item.message}"</p>
+                  </div>
+                )}
+              </motion.div>
+            ))
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// --- Main App ---
+
+// --- Landing Page Component ---
+
+const HomePage = ({ lang, setLang, t }) => {
   return (
     <div 
       className={`min-h-screen selection:bg-primary/30 ${lang === 'ar' ? 'font-sans-ar' : ''}`}
@@ -1175,6 +1399,7 @@ export default function App() {
               <span className="text-xs font-bold uppercase tracking-widest text-gray-400">{t('footerLegal')}</span>
               <a href="#" className="text-sm text-gray-500 hover:text-white transition-colors">{t('footerPrivacy')}</a>
               <a href="#" className="text-sm text-gray-500 hover:text-white transition-colors">{t('footerTerms')}</a>
+              <Link to="/admin" className="text-sm text-gray-700 hover:text-white transition-colors">Admin Portal</Link>
             </div>
           </div>
         </div>
@@ -1184,5 +1409,24 @@ export default function App() {
         </div>
       </footer>
     </div>
+  );
+};
+
+// --- Main App ---
+
+export default function App() {
+  const [lang, setLang] = useState('en');
+
+  const t = (key) => {
+    return translations[lang][key] || translations.en[key];
+  };
+
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<HomePage lang={lang} setLang={setLang} t={t} />} />
+        <Route path="/admin" element={<AdminDashboard t={t} />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
