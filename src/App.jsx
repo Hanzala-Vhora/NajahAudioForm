@@ -4,7 +4,7 @@
  */
 
 import { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { HashRouter, Routes, Route, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   BarChart3, 
@@ -1455,11 +1455,11 @@ export default function App() {
   };
 
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Routes>
         <Route path="/" element={<HomePage lang={lang} setLang={setLang} t={t} />} />
         <Route path="/admin" element={<AdminDashboard t={t} />} />
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
