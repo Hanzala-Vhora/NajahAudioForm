@@ -208,9 +208,7 @@ const Navbar = ({ lang, setLang, t }) => {
     <>
       <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-8 py-4 md:py-6 backdrop-blur-md bg-background/60 border-b border-surface/50">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-primary to-secondary flex items-center justify-center font-bold text-white shadow-lg shadow-primary/20">
-            N
-          </div>
+          <img src="/najahlogo.webp" alt="Najah Media" className="w-8 h-8 md:w-10 md:h-10 object-contain" />
           <span className="font-display font-semibold text-lg md:text-xl tracking-tight">Najah Media</span>
         </div>
         
@@ -1403,9 +1401,7 @@ const HomePage = ({ lang, setLang, t }) => {
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-10">
           <div className="flex flex-col items-center md:items-start gap-4">
              <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-primary to-secondary flex items-center justify-center font-bold text-white">
-                N
-              </div>
+              <img src="/najahlogo.webp" alt="Najah Media" className="w-8 h-8 object-contain" />
               <span className="font-display font-semibold text-xl tracking-tight">Najah Media</span>
             </div>
             <p className="text-gray-500 text-sm max-w-xs text-center md:text-left leading-relaxed">
