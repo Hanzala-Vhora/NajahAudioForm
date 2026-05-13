@@ -4,19 +4,19 @@
  */
 
 import { useState, useEffect } from 'react';
-import { HashRouter, Routes, Route, Link } from 'react-router-dom';
+import { HashRouter, Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { 
-  BarChart3, 
-  Briefcase, 
-  Globe, 
-  Gift, 
-  Layout, 
-  Mail, 
-  Phone, 
-  User, 
-  Building2, 
-  Globe2, 
+import {
+  BarChart3,
+  Briefcase,
+  Globe,
+  Gift,
+  Layout,
+  Mail,
+  Phone,
+  User,
+  Building2,
+  Globe2,
   ChevronRight,
   Instagram,
   Facebook,
@@ -203,6 +203,29 @@ const translations = {
 
 const Navbar = ({ lang, setLang, t }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleNavClick = (e, sectionId) => {
+    e.preventDefault();
+    setIsOpen(false);
+
+    if (location.pathname !== '/') {
+      navigate('/');
+      // Wait for navigation to complete before scrolling
+      setTimeout(() => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+    } else {
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  };
 
   return (
     <>
@@ -211,40 +234,40 @@ const Navbar = ({ lang, setLang, t }) => {
           <img src="/najahlogo.webp" alt="Najah Media" className="w-8 h-8 md:w-10 md:h-10 object-contain" />
           <span className="font-display font-semibold text-lg md:text-xl tracking-tight">Najah Media</span>
         </div>
-        
+
         <div className="hidden lg:flex items-center gap-8 text-sm font-medium text-gray-400">
-          <a href="#hero" className="hover:text-white transition-colors">{t('navHome')}</a>
-          <a href="#services" className="hover:text-white transition-colors">{t('navServices')}</a>
-          <a href="#signup" className="hover:text-white transition-colors">{t('navAnalyze')}</a>
-          <a href="#contact" className="hover:text-white transition-colors">{t('navContact')}</a>
+          <button onClick={(e) => handleNavClick(e, 'hero')} className="hover:text-white transition-colors cursor-pointer">{t('navHome')}</button>
+          <button onClick={(e) => handleNavClick(e, 'services')} className="hover:text-white transition-colors cursor-pointer">{t('navServices')}</button>
+          <button onClick={(e) => handleNavClick(e, 'signup')} className="hover:text-white transition-colors cursor-pointer">{t('navAnalyze')}</button>
+          <button onClick={(e) => handleNavClick(e, 'contact')} className="hover:text-white transition-colors cursor-pointer">{t('navContact')}</button>
         </div>
 
         <div className="flex items-center gap-2 md:gap-4">
-          <button 
+          <button
             onClick={() => setLang(lang === 'en' ? 'ar' : 'en')}
             className="flex items-center gap-2 px-2 md:px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all"
           >
             {lang === 'en' ? (
               <>
-                <span className="text-sm md:text-lg">🇦🇪</span>
+                <img src="https://flagcdn.com/w40/ae.png" alt="UAE" className="w-5 h-auto rounded-sm object-cover" />
                 <span className="text-[10px] font-bold uppercase tracking-widest text-primary hidden sm:inline">العربية</span>
               </>
             ) : (
               <>
-                <span className="text-sm md:text-lg">🇺🇸</span>
+                <img src="https://flagcdn.com/w40/us.png" alt="USA" className="w-5 h-auto rounded-sm object-cover" />
                 <span className="text-[10px] font-bold uppercase tracking-widest text-secondary hidden sm:inline">English</span>
               </>
             )}
           </button>
-          
-          <a 
-            href="#signup" 
+
+          <a
+            href="#signup"
             className="hidden sm:block px-5 py-2.5 rounded-full bg-white text-black text-xs md:text-sm font-semibold hover:bg-opacity-90 transition-all shadow-xl shadow-white/5 active:scale-95"
           >
             {t('navCTA')}
           </a>
 
-          <button 
+          <button
             onClick={() => setIsOpen(!isOpen)}
             className="lg:hidden p-2 rounded-xl bg-white/5 border border-white/10 text-white"
           >
@@ -264,39 +287,39 @@ const Navbar = ({ lang, setLang, t }) => {
             className="fixed inset-0 z-[60] lg:hidden bg-[#0a090c] flex flex-col pt-24 px-8 pb-12 overflow-y-auto"
           >
             <div className="flex flex-col gap-2 text-2xl font-display font-medium mb-12">
-              <a href="#hero" onClick={() => setIsOpen(false)} className="py-4 border-b border-white/5 flex items-center justify-between group">
+              <button onClick={(e) => handleNavClick(e, 'hero')} className="py-4 border-b border-white/5 flex items-center justify-between group text-left w-full">
                 {t('navHome')} <ChevronRight className="w-6 h-6 opacity-40 group-hover:opacity-100 transition-opacity" />
-              </a>
-              <a href="#services" onClick={() => setIsOpen(false)} className="py-4 border-b border-white/5 flex items-center justify-between group">
+              </button>
+              <button onClick={(e) => handleNavClick(e, 'services')} className="py-4 border-b border-white/5 flex items-center justify-between group text-left w-full">
                 {t('navServices')} <ChevronRight className="w-6 h-6 opacity-40 group-hover:opacity-100 transition-opacity" />
-              </a>
-              <a href="#signup" onClick={() => setIsOpen(false)} className="py-4 border-b border-white/5 flex items-center justify-between group">
+              </button>
+              <button onClick={(e) => handleNavClick(e, 'signup')} className="py-4 border-b border-white/5 flex items-center justify-between group text-left w-full">
                 {t('navAnalyze')} <ChevronRight className="w-6 h-6 opacity-40 group-hover:opacity-100 transition-opacity" />
-              </a>
-              <a href="#contact" onClick={() => setIsOpen(false)} className="py-4 border-b border-white/5 flex items-center justify-between group">
+              </button>
+              <button onClick={(e) => handleNavClick(e, 'contact')} className="py-4 border-b border-white/5 flex items-center justify-between group text-left w-full">
                 {t('navContact')} <ChevronRight className="w-6 h-6 opacity-40 group-hover:opacity-100 transition-opacity" />
-              </a>
+              </button>
             </div>
 
             <div className="mt-auto space-y-8">
-              <a 
-                href="#signup" 
+              <a
+                href="#signup"
                 onClick={() => setIsOpen(false)}
                 className="block w-full py-5 rounded-2xl bg-gradient-to-r from-primary to-secondary text-white text-center text-xl font-bold shadow-2xl shadow-primary/20"
               >
                 {t('navCTA')}
               </a>
-              
+
               <div className="flex justify-center gap-8 py-6 border-t border-white/5 mt-8">
-                 <a href="#" className="p-2 bg-white/5 rounded-full hover:bg-primary/20 transition-colors">
-                   <Instagram className="w-6 h-6 text-gray-400" />
-                 </a>
-                 <a href="#" className="p-2 bg-white/5 rounded-full hover:bg-primary/20 transition-colors">
-                   <Linkedin className="w-6 h-6 text-gray-400" />
-                 </a>
-                 <a href="#" className="p-2 bg-white/5 rounded-full hover:bg-primary/20 transition-colors">
-                   <Twitter className="w-6 h-6 text-gray-400" />
-                 </a>
+                <a href="#" className="p-2 bg-white/5 rounded-full hover:bg-primary/20 transition-colors">
+                  <Instagram className="w-6 h-6 text-gray-400" />
+                </a>
+                <a href="#" className="p-2 bg-white/5 rounded-full hover:bg-primary/20 transition-colors">
+                  <Linkedin className="w-6 h-6 text-gray-400" />
+                </a>
+                <a href="#" className="p-2 bg-white/5 rounded-full hover:bg-primary/20 transition-colors">
+                  <Twitter className="w-6 h-6 text-gray-400" />
+                </a>
               </div>
             </div>
           </motion.div>
@@ -358,10 +381,10 @@ const SignupForm = ({ t }) => {
   const togglePlatform = (id) => {
     setFormData(prev => {
       const isActive = prev.platforms.includes(id);
-      const newPlatforms = isActive 
-        ? prev.platforms.filter(p => p !== id) 
+      const newPlatforms = isActive
+        ? prev.platforms.filter(p => p !== id)
         : [...prev.platforms, id];
-      
+
       const newUrls = { ...prev.platformUrls };
       if (isActive) {
         delete newUrls[id];
@@ -380,7 +403,7 @@ const SignupForm = ({ t }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     try {
       // Use the API endpoint provided in the specification
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/najah/analyze`, {
@@ -409,7 +432,7 @@ const SignupForm = ({ t }) => {
 
   if (isSubmitted) {
     return (
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         className="max-w-4xl mx-auto p-12 rounded-[2rem] bg-white/[0.05] border border-primary/30 shadow-2xl text-center"
@@ -419,11 +442,11 @@ const SignupForm = ({ t }) => {
         </div>
         <h2 className="text-3xl font-display font-bold mb-4">{t('successTitle')}</h2>
         <p className="text-gray-400 text-lg leading-relaxed">
-          {t('successDesc1')} <strong>{t('successDesc2')}</strong> {t('successDesc3')} 
-          <span className="text-primary font-bold"> {t('successDesc4')} </span> 
+          {t('successDesc1')} <strong>{t('successDesc2')}</strong> {t('successDesc3')}
+          <span className="text-primary font-bold"> {t('successDesc4')} </span>
           {t('successDesc5')}
         </p>
-        <button 
+        <button
           onClick={() => setIsSubmitted(false)}
           className="mt-8 text-primary font-bold uppercase tracking-widest text-xs hover:underline"
         >
@@ -442,18 +465,18 @@ const SignupForm = ({ t }) => {
       <h2 className="text-2xl sm:text-3xl md:text-4xl font-display font-bold mb-6 sm:mb-8 text-center bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
         {t('signupTitle')}
       </h2>
-      
+
       <form className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6" onSubmit={handleSubmit}>
         <div className="space-y-1.5 sm:space-y-2">
           <label className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-gray-500 ms-1">{t('fieldFullName')}</label>
           <div className="relative">
             <User className="absolute start-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <input 
-              type="text" 
+            <input
+              type="text"
               placeholder={t('fieldPlaceholderName')}
               className="w-full ps-11 pe-4 py-3 sm:py-4 rounded-xl sm:rounded-2xl bg-white/[0.05] border border-white/10 focus:border-primary/50 focus:outline-none transition-all placeholder:text-gray-600 text-base"
               value={formData.name}
-              onChange={(e) => setFormData({...formData, name: e.target.value})}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               required
               disabled={isSubmitting}
             />
@@ -464,12 +487,12 @@ const SignupForm = ({ t }) => {
           <label className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-gray-500 ms-1">{t('fieldEmail')}</label>
           <div className="relative">
             <Mail className="absolute start-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <input 
-              type="email" 
+            <input
+              type="email"
               placeholder={t('fieldPlaceholderEmail')}
               className="w-full ps-11 pe-4 py-3 sm:py-4 rounded-xl sm:rounded-2xl bg-white/[0.05] border border-white/10 focus:border-primary/50 focus:outline-none transition-all placeholder:text-gray-600 text-base"
               value={formData.email}
-              onChange={(e) => setFormData({...formData, email: e.target.value})}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               required
               disabled={isSubmitting}
             />
@@ -480,12 +503,12 @@ const SignupForm = ({ t }) => {
           <label className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-gray-500 ms-1">{t('fieldPhone')}</label>
           <div className="relative">
             <Phone className="absolute start-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <input 
-              type="tel" 
+            <input
+              type="tel"
               placeholder={t('fieldPlaceholderPhone')}
               className="w-full ps-11 pe-4 py-3 sm:py-4 rounded-xl sm:rounded-2xl bg-white/[0.05] border border-white/10 focus:border-primary/50 focus:outline-none transition-all placeholder:text-gray-600 text-base"
               value={formData.phone}
-              onChange={(e) => setFormData({...formData, phone: e.target.value})}
+              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
               required
               disabled={isSubmitting}
             />
@@ -496,12 +519,12 @@ const SignupForm = ({ t }) => {
           <label className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-gray-500 ms-1">{t('fieldCompany')}</label>
           <div className="relative">
             <Building2 className="absolute start-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <input 
-              type="text" 
+            <input
+              type="text"
               placeholder={t('fieldPlaceholderCompany')}
               className="w-full ps-11 pe-4 py-3 sm:py-4 rounded-xl sm:rounded-2xl bg-white/[0.05] border border-white/10 focus:border-primary/50 focus:outline-none transition-all placeholder:text-gray-600 text-base"
               value={formData.company}
-              onChange={(e) => setFormData({...formData, company: e.target.value})}
+              onChange={(e) => setFormData({ ...formData, company: e.target.value })}
               required
               disabled={isSubmitting}
             />
@@ -512,12 +535,12 @@ const SignupForm = ({ t }) => {
           <label className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-gray-500 ms-1">{t('fieldDesignation')}</label>
           <div className="relative">
             <Briefcase className="absolute start-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <input 
-              type="text" 
+            <input
+              type="text"
               placeholder={t('fieldPlaceholderDesignation')}
               className="w-full ps-11 pe-4 py-3 sm:py-4 rounded-xl sm:rounded-2xl bg-white/[0.05] border border-white/10 focus:border-primary/50 focus:outline-none transition-all placeholder:text-gray-600 text-base"
               value={formData.designation}
-              onChange={(e) => setFormData({...formData, designation: e.target.value})}
+              onChange={(e) => setFormData({ ...formData, designation: e.target.value })}
               required
               disabled={isSubmitting}
             />
@@ -528,12 +551,12 @@ const SignupForm = ({ t }) => {
           <label className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-gray-500 ms-1">{t('fieldWebsite')}</label>
           <div className="relative">
             <Globe2 className="absolute start-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <input 
-              type="url" 
+            <input
+              type="url"
               placeholder={t('fieldPlaceholderWebsite') || "https://example.com"}
               className="w-full ps-11 pe-4 py-3 sm:py-4 rounded-xl sm:rounded-2xl bg-white/[0.05] border border-white/10 focus:border-primary/50 focus:outline-none transition-all placeholder:text-gray-600 text-base"
               value={formData.website}
-              onChange={(e) => setFormData({...formData, website: e.target.value})}
+              onChange={(e) => setFormData({ ...formData, website: e.target.value })}
               required
               disabled={isSubmitting}
             />
@@ -576,11 +599,10 @@ const SignupForm = ({ t }) => {
                         key={p.id}
                         type="button"
                         onClick={() => togglePlatform(p.id)}
-                        className={`flex flex-col items-center gap-1.5 sm:gap-2 p-2 sm:p-3 rounded-lg sm:rounded-xl border transition-all ${
-                          isActive 
-                            ? 'bg-primary/20 border-primary shadow-lg shadow-primary/10' 
-                            : 'bg-white/[0.03] border-white/5 hover:border-white/20'
-                        }`}
+                        className={`flex flex-col items-center gap-1.5 sm:gap-2 p-2 sm:p-3 rounded-lg sm:rounded-xl border transition-all ${isActive
+                          ? 'bg-primary/20 border-primary shadow-lg shadow-primary/10'
+                          : 'bg-white/[0.03] border-white/5 hover:border-white/20'
+                          }`}
                         disabled={isSubmitting}
                       >
                         <Icon className={`w-4 h-4 sm:w-5 sm:h-5 ${isActive ? 'text-primary' : 'text-gray-400'}`} />
@@ -593,7 +615,7 @@ const SignupForm = ({ t }) => {
                 {/* Platform URL Inputs */}
                 <AnimatePresence>
                   {formData.platforms.length > 0 && (
-                    <motion.div 
+                    <motion.div
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -10 }}
@@ -605,7 +627,7 @@ const SignupForm = ({ t }) => {
                           const platform = platforms.find(p => p.id === platformId);
                           const Icon = platform.icon;
                           return (
-                            <motion.div 
+                            <motion.div
                               layout
                               initial={{ opacity: 0, x: -10 }}
                               animate={{ opacity: 1, x: 0 }}
@@ -615,8 +637,8 @@ const SignupForm = ({ t }) => {
                               <div className="absolute start-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
                                 <Icon className="w-3.5 h-3.5 text-primary" />
                               </div>
-                              <input 
-                                type="url" 
+                              <input
+                                type="url"
                                 placeholder={`${platform.label} URL`}
                                 className="w-full ps-12 pe-4 py-3 rounded-xl bg-white/[0.05] border border-white/10 focus:border-primary/50 focus:outline-none transition-all placeholder:text-gray-600 text-sm"
                                 value={formData.platformUrls[platformId] || ''}
@@ -644,11 +666,10 @@ const SignupForm = ({ t }) => {
             whileHover={{ scale: isSubmitting ? 1 : 1.02 }}
             whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
             disabled={isSubmitting}
-            className={`w-full py-4 sm:py-5 rounded-xl sm:rounded-2xl text-white font-bold text-base sm:text-lg shadow-xl flex items-center justify-center gap-2 transition-all ${
-              isSubmitting 
-                ? 'bg-gray-600 cursor-not-allowed' 
-                : 'bg-gradient-to-r from-primary to-secondary shadow-primary/20'
-            }`}
+            className={`w-full py-4 sm:py-5 rounded-xl sm:rounded-2xl text-white font-bold text-base sm:text-lg shadow-xl flex items-center justify-center gap-2 transition-all ${isSubmitting
+              ? 'bg-gray-600 cursor-not-allowed'
+              : 'bg-gradient-to-r from-primary to-secondary shadow-primary/20'
+              }`}
           >
             {isSubmitting ? (
               <>
@@ -704,117 +725,116 @@ const ContactSection = ({ t, lang }) => {
 
   return (
     <section id="contact" className="py-16 md:py-24 px-6 md:px-12 relative overflow-hidden">
-       {/* Background accent */}
-       <div className="absolute top-1/2 left-0 w-[40vw] h-[40vw] bg-secondary/5 rounded-full blur-[120px] pointer-events-none" />
+      {/* Background accent */}
+      <div className="absolute top-1/2 left-0 w-[40vw] h-[40vw] bg-secondary/5 rounded-full blur-[120px] pointer-events-none" />
 
-       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          <div className="text-center lg:text-left">
-            <span className="text-secondary font-bold uppercase tracking-widest text-sm mb-4 block mx-auto lg:mx-0">{t('contactSub')}</span>
-            <h2 className="text-3xl md:text-6xl font-display font-bold mb-6 md:mb-8">
-              {t('contactTitle')}
-            </h2>
-            <p className="text-gray-400 text-base md:text-lg mb-10 md:mb-12 max-w-lg leading-relaxed mx-auto lg:mx-0">
-              {t('contactDesc')}
-            </p>
-            
-            <div className="flex flex-col sm:flex-row lg:flex-col items-center lg:items-start justify-center gap-6 md:gap-8">
-              <div className="flex items-center gap-4 group">
-                <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:border-secondary/50 transition-colors">
-                  <Mail className="w-5 h-5 text-secondary" />
-                </div>
-                <div className="text-left">
-                  <p className="text-[10px] text-gray-500 uppercase tracking-tighter">{t('contactEmail')}</p>
-                  <p className="font-medium text-sm md:text-base">info@najah.io</p>
-                </div>
+      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        <div className="text-center lg:text-left">
+          <span className="text-secondary font-bold uppercase tracking-widest text-sm mb-4 block mx-auto lg:mx-0">{t('contactSub')}</span>
+          <h2 className="text-3xl md:text-6xl font-display font-bold mb-6 md:mb-8">
+            {t('contactTitle')}
+          </h2>
+          <p className="text-gray-400 text-base md:text-lg mb-10 md:mb-12 max-w-lg leading-relaxed mx-auto lg:mx-0">
+            {t('contactDesc')}
+          </p>
+
+          <div className="flex flex-col sm:flex-row lg:flex-col items-center lg:items-start justify-center gap-6 md:gap-8">
+            <div className="flex items-center gap-4 group">
+              <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:border-secondary/50 transition-colors">
+                <Mail className="w-5 h-5 text-secondary" />
               </div>
-              <div className="flex items-center gap-4 group">
-                <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:border-secondary/50 transition-colors">
-                  <Phone className="w-5 h-5 text-secondary" />
-                </div>
-                <div className="text-left">
-                  <p className="text-[10px] text-gray-500 uppercase tracking-tighter">{t('contactCall')}</p>
-                  <p className="font-medium text-sm md:text-base">+971585743219</p>
-                </div>
+              <div className="text-left">
+                <p className="text-[10px] text-gray-500 uppercase tracking-tighter">{t('contactEmail')}</p>
+                <p className="font-medium text-sm md:text-base">info@najah.io</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-4 group">
+              <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:border-secondary/50 transition-colors">
+                <Phone className="w-5 h-5 text-secondary" />
+              </div>
+              <div className="text-left">
+                <p className="text-[10px] text-gray-500 uppercase tracking-tighter">{t('contactCall')}</p>
+                <p className="font-medium text-sm md:text-base">+971585743219</p>
               </div>
             </div>
           </div>
+        </div>
 
-          <div className="p-6 md:p-10 rounded-[1.5rem] md:rounded-[2.5rem] bg-surface/20 border border-white/5 backdrop-blur-sm">
-            {isContactSent ? (
-              <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="text-center py-20"
-              >
-                <div className="w-16 h-16 bg-secondary/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <Mail className="w-8 h-8 text-secondary" />
-                </div>
-                <h3 className="text-2xl font-bold mb-2">{t('contactSuccess')}</h3>
-                <p className="text-gray-400">{t('contactSuccessDesc')}</p>
-                <button onClick={() => setIsContactSent(false)} className="mt-8 text-secondary text-sm font-bold uppercase tracking-widest">{t('contactReset')}</button>
-              </motion.div>
-            ) : (
-              <form className="space-y-6" onSubmit={handleContactSubmit}>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <input 
-                    type="text" 
-                    placeholder={t('contactFirstName')} 
-                    className="w-full px-6 py-4 rounded-xl bg-white/5 border border-white/10 focus:border-secondary/50 focus:outline-none transition-all text-base"
-                    value={contactData.firstName}
-                    onChange={(e) => setContactData({...contactData, firstName: e.target.value})}
-                    required
-                    disabled={isSending}
-                  />
-                  <input 
-                    type="text" 
-                    placeholder={t('contactLastName')} 
-                    className="w-full px-6 py-4 rounded-xl bg-white/5 border border-white/10 focus:border-secondary/50 focus:outline-none transition-all text-base"
-                    value={contactData.lastName}
-                    onChange={(e) => setContactData({...contactData, lastName: e.target.value})}
-                    required
-                    disabled={isSending}
-                  />
-                </div>
-                <input 
-                  type="email" 
-                  placeholder={t('fieldEmail')} 
+        <div className="p-6 md:p-10 rounded-[1.5rem] md:rounded-[2.5rem] bg-surface/20 border border-white/5 backdrop-blur-sm">
+          {isContactSent ? (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-center py-20"
+            >
+              <div className="w-16 h-16 bg-secondary/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Mail className="w-8 h-8 text-secondary" />
+              </div>
+              <h3 className="text-2xl font-bold mb-2">{t('contactSuccess')}</h3>
+              <p className="text-gray-400">{t('contactSuccessDesc')}</p>
+              <button onClick={() => setIsContactSent(false)} className="mt-8 text-secondary text-sm font-bold uppercase tracking-widest">{t('contactReset')}</button>
+            </motion.div>
+          ) : (
+            <form className="space-y-6" onSubmit={handleContactSubmit}>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <input
+                  type="text"
+                  placeholder={t('contactFirstName')}
                   className="w-full px-6 py-4 rounded-xl bg-white/5 border border-white/10 focus:border-secondary/50 focus:outline-none transition-all text-base"
-                  value={contactData.email}
-                  onChange={(e) => setContactData({...contactData, email: e.target.value})}
+                  value={contactData.firstName}
+                  onChange={(e) => setContactData({ ...contactData, firstName: e.target.value })}
                   required
                   disabled={isSending}
                 />
-                <textarea 
-                  placeholder={t('contactMessage')} 
-                  rows={4}
-                  className="w-full px-6 py-4 rounded-xl bg-white/5 border border-white/10 focus:border-secondary/50 focus:outline-none transition-all resize-none text-base"
-                  value={contactData.message}
-                  onChange={(e) => setContactData({...contactData, message: e.target.value})}
+                <input
+                  type="text"
+                  placeholder={t('contactLastName')}
+                  className="w-full px-6 py-4 rounded-xl bg-white/5 border border-white/10 focus:border-secondary/50 focus:outline-none transition-all text-base"
+                  value={contactData.lastName}
+                  onChange={(e) => setContactData({ ...contactData, lastName: e.target.value })}
                   required
                   disabled={isSending}
                 />
-                <button 
-                  type="submit"
-                  disabled={isSending}
-                  className={`w-full py-4 rounded-xl text-white font-bold transition-all flex items-center justify-center gap-2 ${
-                    isSending ? 'bg-gray-600 cursor-not-allowed' : 'bg-secondary hover:shadow-lg hover:shadow-secondary/20'
+              </div>
+              <input
+                type="email"
+                placeholder={t('fieldEmail')}
+                className="w-full px-6 py-4 rounded-xl bg-white/5 border border-white/10 focus:border-secondary/50 focus:outline-none transition-all text-base"
+                value={contactData.email}
+                onChange={(e) => setContactData({ ...contactData, email: e.target.value })}
+                required
+                disabled={isSending}
+              />
+              <textarea
+                placeholder={t('contactMessage')}
+                rows={4}
+                className="w-full px-6 py-4 rounded-xl bg-white/5 border border-white/10 focus:border-secondary/50 focus:outline-none transition-all resize-none text-base"
+                value={contactData.message}
+                onChange={(e) => setContactData({ ...contactData, message: e.target.value })}
+                required
+                disabled={isSending}
+              />
+              <button
+                type="submit"
+                disabled={isSending}
+                className={`w-full py-4 rounded-xl text-white font-bold transition-all flex items-center justify-center gap-2 ${isSending ? 'bg-gray-600 cursor-not-allowed' : 'bg-secondary hover:shadow-lg hover:shadow-secondary/20'
                   }`}
-                >
-                  {isSending ? (
-                    <>
-                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                      Sending...
-                    </>
-                  ) : (
-                    <>
-                      {t('contactBtn')} <ChevronRight className={`w-4 h-4 ${lang === 'ar' ? 'rotate-180' : ''}`} />
-                    </>
-                  )}
-                </button>
-              </form>
-            )}
-          </div>
-       </div>
+              >
+                {isSending ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    Sending...
+                  </>
+                ) : (
+                  <>
+                    {t('contactBtn')} <ChevronRight className={`w-4 h-4 ${lang === 'ar' ? 'rotate-180' : ''}`} />
+                  </>
+                )}
+              </button>
+            </form>
+          )}
+        </div>
+      </div>
     </section>
   );
 };
@@ -878,7 +898,7 @@ const AdminDashboard = ({ t }) => {
     }
   };
 
-  const filteredData = data.filter(item => 
+  const filteredData = data.filter(item =>
     item.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     item.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     item.company?.toLowerCase().includes(searchTerm.toLowerCase())
@@ -887,7 +907,7 @@ const AdminDashboard = ({ t }) => {
   if (!isAuthorized) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-6">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="w-full max-w-md p-8 rounded-[2rem] bg-surface/20 border border-white/10 backdrop-blur-xl shadow-2xl"
@@ -897,12 +917,12 @@ const AdminDashboard = ({ t }) => {
           </div>
           <h2 className="text-2xl font-display font-bold text-center mb-2">Admin Access</h2>
           <p className="text-gray-500 text-center text-sm mb-8">Enter password to view submissions</p>
-          
+
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="relative">
               <Lock className="absolute start-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <input 
-                type="password" 
+              <input
+                type="password"
                 placeholder="Enter Password"
                 className="w-full ps-12 pe-4 py-4 rounded-xl bg-white/[0.05] border border-white/10 focus:border-primary/50 focus:outline-none transition-all"
                 value={password}
@@ -910,15 +930,15 @@ const AdminDashboard = ({ t }) => {
                 required
               />
             </div>
-            <button 
+            <button
               type="submit"
               className="w-full py-4 rounded-xl bg-primary text-white font-bold hover:shadow-lg hover:shadow-primary/20 transition-all active:scale-[0.98]"
             >
               Login to Dashboard
             </button>
-            <a href="#" className="block text-center text-xs text-gray-500 hover:text-white transition-colors mt-4">
+            <Link to="/" className="block text-center text-xs text-gray-500 hover:text-white transition-colors mt-4">
               Return to Website
-            </a>
+            </Link>
           </form>
         </motion.div>
       </div>
@@ -931,26 +951,26 @@ const AdminDashboard = ({ t }) => {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <a href="#" className="p-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
+              <Link to="/" className="p-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
                 <ArrowLeft className="w-4 h-4" />
-              </a>
+              </Link>
               <span className="text-primary font-bold uppercase tracking-widest text-xs">Management Portal</span>
             </div>
             <h1 className="text-3xl md:text-5xl font-display font-bold">Leads Dashboard</h1>
           </div>
-          
+
           <div className="flex items-center gap-4 w-full md:w-auto">
             <div className="relative flex-1 md:w-64">
               <Search className="absolute start-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-              <input 
-                type="text" 
+              <input
+                type="text"
                 placeholder="Search leads..."
                 className="w-full ps-11 pe-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-primary/30 focus:outline-none transition-all text-sm"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-            <button 
+            <button
               onClick={fetchData}
               disabled={isLoading}
               className="p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all disabled:opacity-50"
@@ -979,7 +999,7 @@ const AdminDashboard = ({ t }) => {
             </div>
           ) : (
             filteredData.map((item) => (
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 key={item.id}
@@ -1003,29 +1023,29 @@ const AdminDashboard = ({ t }) => {
                         )}
                         <span className="text-[10px] text-gray-600 font-mono">ID: {item.id}</span>
                       </div>
-                      
+
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-2 gap-x-6 text-sm text-gray-400">
                         <div className="flex items-center gap-2 min-w-0">
-                          <Mail className="w-3.5 h-3.5 shrink-0 text-gray-600" /> 
+                          <Mail className="w-3.5 h-3.5 shrink-0 text-gray-600" />
                           <span className="truncate">{item.email}</span>
                         </div>
                         <div className="flex items-center gap-2 min-w-0">
-                          <Phone className="w-3.5 h-3.5 shrink-0 text-gray-600" /> 
+                          <Phone className="w-3.5 h-3.5 shrink-0 text-gray-600" />
                           <span className="truncate">{item.phone || 'No Phone'}</span>
                         </div>
                         <div className="flex items-center gap-2 min-w-0">
-                          <Building2 className="w-3.5 h-3.5 shrink-0 text-gray-600" /> 
+                          <Building2 className="w-3.5 h-3.5 shrink-0 text-gray-600" />
                           <span className="truncate">{item.company || 'No Company'}</span>
                         </div>
                         {item.designation && (
                           <div className="flex items-center gap-2 min-w-0">
-                            <Briefcase className="w-3.5 h-3.5 shrink-0 text-gray-600" /> 
+                            <Briefcase className="w-3.5 h-3.5 shrink-0 text-gray-600" />
                             <span className="truncate">{item.designation}</span>
                           </div>
                         )}
                         {item.website && (
                           <div className="flex items-center gap-2 min-w-0">
-                            <Globe2 className="w-3.5 h-3.5 shrink-0 text-gray-600" /> 
+                            <Globe2 className="w-3.5 h-3.5 shrink-0 text-gray-600" />
                             <a href={item.website} target="_blank" rel="noopener noreferrer" className="truncate hover:text-primary transition-colors">
                               {item.website.replace(/^https?:\/\//, '')}
                             </a>
@@ -1034,12 +1054,12 @@ const AdminDashboard = ({ t }) => {
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="flex flex-row lg:flex-col items-center lg:items-end justify-between shrink-0">
                     <div className="text-[10px] text-gray-500 uppercase tracking-widest font-medium bg-white/5 px-3 py-1 rounded-full lg:bg-transparent lg:px-0 lg:py-0">
-                      {new Date(item.createdAt).toLocaleDateString('en-US', { 
-                        month: 'short', 
-                        day: 'numeric', 
+                      {new Date(item.createdAt).toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
                         year: 'numeric',
                         hour: '2-digit',
                         minute: '2-digit'
@@ -1100,7 +1120,7 @@ const AdminDashboard = ({ t }) => {
 
 const HomePage = ({ lang, setLang, t }) => {
   return (
-    <div 
+    <div
       className={`min-h-screen selection:bg-primary/30 ${lang === 'ar' ? 'font-sans-ar' : ''}`}
       dir={lang === 'ar' ? 'rtl' : 'ltr'}
     >
@@ -1111,14 +1131,14 @@ const HomePage = ({ lang, setLang, t }) => {
       >
         <Navbar lang={lang} setLang={setLang} t={t} />
       </motion.div>
-      
+
       {/* Hero Section */}
       <header id="hero" className="relative min-h-[80vh] md:min-h-[90vh] flex flex-col items-center justify-center pt-24 pb-16 md:pt-32 md:pb-24 px-6 overflow-hidden">
         {/* Background Gradients */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120vw] h-[120vw] bg-radial from-primary/10 via-transparent to-transparent opacity-50 blur-[100px] pointer-events-none" />
         <div className="absolute top-1/4 right-0 w-[50vw] h-[50vw] bg-secondary/10 rounded-full blur-[120px] pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-[50vw] h-[50vw] bg-primary/10 rounded-full blur-[120px] pointer-events-none" />
-        
+
         {/* Grid Overlay */}
         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 pointer-events-none mix-blend-overlay" />
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] pointer-events-none" />
@@ -1151,8 +1171,8 @@ const HomePage = ({ lang, setLang, t }) => {
                 {t('heroBadge')}
               </span>
             </motion.div>
-            
-            <motion.h1 
+
+            <motion.h1
               variants={{
                 hidden: { opacity: 0, y: 20 },
                 visible: { opacity: 1, y: 0 }
@@ -1164,16 +1184,16 @@ const HomePage = ({ lang, setLang, t }) => {
                 <span className="bg-gradient-to-r from-primary via-secondary to-primary bg-[length:200%_auto] animate-gradient-text bg-clip-text text-transparent">
                   {t('heroTitlePart2')}
                 </span>
-                <motion.div 
+                <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: '100%' }}
                   transition={{ delay: 1.5, duration: 1.5 }}
-                  className="absolute bottom-0 left-0 h-0.5 md:h-1 bg-gradient-to-r from-primary to-secondary rounded-full" 
+                  className="absolute bottom-0 left-0 h-0.5 md:h-1 bg-gradient-to-r from-primary to-secondary rounded-full"
                 />
               </span>
             </motion.h1>
-            
-            <motion.p 
+
+            <motion.p
               variants={{
                 hidden: { opacity: 0, y: 20 },
                 visible: { opacity: 1, y: 0 }
@@ -1182,8 +1202,8 @@ const HomePage = ({ lang, setLang, t }) => {
             >
               {t('heroDesc')}
             </motion.p>
-            
-            <motion.div 
+
+            <motion.div
               variants={{
                 hidden: { opacity: 0, y: 20 },
                 visible: { opacity: 1, y: 0 }
@@ -1197,10 +1217,10 @@ const HomePage = ({ lang, setLang, t }) => {
                 className="group w-full sm:w-auto px-8 sm:px-10 py-4 sm:py-5 rounded-2xl bg-white text-black font-bold text-lg sm:text-xl transition-all flex items-center justify-center gap-3 relative overflow-hidden"
               >
                 <div className="absolute inset-0 bg-primary/5 translate-y-full group-hover:translate-y-0 transition-transform" />
-                <span className="relative z-10">{t('heroCTA1')}</span> 
+                <span className="relative z-10">{t('heroCTA1')}</span>
                 <ChevronRight className={`w-5 h-5 sm:w-6 sm:h-6 relative z-10 transition-transform group-hover:translate-x-1 ${lang === 'ar' ? 'rotate-180 group-hover:-translate-x-1' : ''}`} />
               </motion.a>
-              <motion.a 
+              <motion.a
                 href="#services"
                 whileHover={{ scale: 1.05, borderColor: 'rgba(255,255,255,0.4)' }}
                 whileTap={{ scale: 0.95 }}
@@ -1212,7 +1232,7 @@ const HomePage = ({ lang, setLang, t }) => {
           </motion.div>
 
           {/* Floaters & Stats */}
-          <motion.div 
+          <motion.div
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
@@ -1234,7 +1254,7 @@ const HomePage = ({ lang, setLang, t }) => {
                 { icon: BarChart3, label: t('statGrowth'), color: 'secondary' },
                 { icon: Globe2, label: t('statArch'), color: 'white' }
               ].map((item, i) => (
-                <motion.div 
+                <motion.div
                   key={i}
                   variants={{
                     hidden: { opacity: 0, y: 20 },
@@ -1256,9 +1276,9 @@ const HomePage = ({ lang, setLang, t }) => {
               <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 px-4 md:px-6 py-2 bg-background border border-white/5 rounded-full text-[8px] md:text-[10px] font-bold uppercase tracking-[0.5em] text-gray-500 whitespace-nowrap">
                 Performance Metrics
               </div>
-              
+
               <div className="flex flex-col md:flex-row items-center justify-center gap-12 md:gap-32">
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0 }}
                   whileInView={{ opacity: 1 }}
                   viewport={{ once: true }}
@@ -1274,7 +1294,7 @@ const HomePage = ({ lang, setLang, t }) => {
                 <div className="h-16 md:h-20 w-px bg-white/10 hidden md:block" />
 
                 <div className="text-center">
-                  <motion.div 
+                  <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
@@ -1284,11 +1304,11 @@ const HomePage = ({ lang, setLang, t }) => {
                   </motion.div>
                   <div className="flex items-center justify-center gap-8 md:gap-14">
                     {[
-                      { flag: "🇦🇪", name: "UAE", label: "United Arab Emirates" },
-                      { flag: "🇸🇦", name: "KSA", label: "Saudi Arabia" },
-                      { flag: "🇴🇲", name: "OMAN", label: "Oman" }
+                      { flag: "https://flagcdn.com/w160/ae.png", name: "UAE", label: "United Arab Emirates", code: "AE" },
+                      { flag: "https://flagcdn.com/w160/sa.png", name: "KSA", label: "Saudi Arabia", code: "SA" },
+                      { flag: "https://flagcdn.com/w160/om.png", name: "OMAN", label: "Oman", code: "OM" }
                     ].map((c, i) => (
-                      <motion.div 
+                      <motion.div
                         key={i}
                         initial={{ opacity: 0, scale: 0.5, y: 20 }}
                         whileInView={{ opacity: 1, scale: 1, y: 0 }}
@@ -1296,10 +1316,16 @@ const HomePage = ({ lang, setLang, t }) => {
                         transition={{ delay: 0.3 + (i * 0.2), type: "spring", stiffness: 100 }}
                         className="flex flex-col items-center gap-2 md:gap-3"
                       >
-                        <span title={c.label} className="text-4xl md:text-6xl hover:scale-125 hover:-translate-y-2 transition-all cursor-help block filter drop-shadow-2xl">
-                          {c.flag}
-                        </span>
-                        <span className="text-[8px] md:text-xs text-gray-500 md:text-gray-400 font-bold uppercase tracking-[0.2em]">{c.name}</span>
+                        <div className="relative group/flag">
+                          <img
+                            src={c.flag}
+                            alt={c.label}
+                            className="w-12 md:w-20 h-auto rounded-lg shadow-2xl transition-all group-hover/flag:scale-110 group-hover/flag:-translate-y-2"
+                          />
+                          <div className="absolute -inset-2 bg-primary/20 blur-xl opacity-0 group-hover/flag:opacity-100 transition-opacity -z-10" />
+                        </div>
+                        <span className="text-[10px] md:text-sm text-white font-display font-bold uppercase tracking-[0.3em] mt-1">{c.code}</span>
+                        <span className="text-[8px] md:text-[10px] text-gray-500 font-medium uppercase tracking-widest opacity-60">{c.name}</span>
                       </motion.div>
                     ))}
                   </div>
@@ -1326,33 +1352,33 @@ const HomePage = ({ lang, setLang, t }) => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <ServiceCard 
-              icon={Layout} 
-              title={t('serv1Title')} 
+            <ServiceCard
+              icon={Layout}
+              title={t('serv1Title')}
               description={t('serv1Desc')}
               delay={0.1}
             />
-            <ServiceCard 
-              icon={BarChart3} 
-              title={t('serv2Title')} 
+            <ServiceCard
+              icon={BarChart3}
+              title={t('serv2Title')}
               description={t('serv2Desc')}
               delay={0.2}
             />
-            <ServiceCard 
-              icon={Briefcase} 
-              title={t('serv3Title')} 
+            <ServiceCard
+              icon={Briefcase}
+              title={t('serv3Title')}
               description={t('serv3Desc')}
               delay={0.3}
             />
-            <ServiceCard 
-              icon={Gift} 
-              title={t('serv4Title')} 
+            <ServiceCard
+              icon={Gift}
+              title={t('serv4Title')}
               description={t('serv4Desc')}
               delay={0.4}
             />
-            <ServiceCard 
-              icon={Globe} 
-              title={t('serv5Title')} 
+            <ServiceCard
+              icon={Globe}
+              title={t('serv5Title')}
               description={t('serv5Desc')}
               delay={0.5}
             />
@@ -1372,7 +1398,7 @@ const HomePage = ({ lang, setLang, t }) => {
       <section id="signup" className="py-16 md:py-32 px-6 overflow-hidden relative">
         {/* Glow behind section */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-[500px] bg-primary/5 blur-[150px] -z-10" />
-        
+
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-10 md:mb-16">
             <motion.div
@@ -1388,7 +1414,7 @@ const HomePage = ({ lang, setLang, t }) => {
               </p>
             </motion.div>
           </div>
-          
+
           <SignupForm t={t} />
         </div>
       </section>
@@ -1400,7 +1426,7 @@ const HomePage = ({ lang, setLang, t }) => {
       <footer className="py-16 md:py-20 px-6 md:px-8 border-t border-white/5 bg-background relative z-10">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-10">
           <div className="flex flex-col items-center md:items-start gap-4">
-             <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2">
               <img src="/najahlogo.webp" alt="Najah Media" className="w-8 h-8 object-contain" />
               <span className="font-display font-semibold text-xl tracking-tight">Najah Media</span>
             </div>
@@ -1408,19 +1434,16 @@ const HomePage = ({ lang, setLang, t }) => {
               {t('footerDesc')}
             </p>
           </div>
-          
+
           <div className="flex flex-col sm:flex-row gap-12 text-center sm:text-left">
             <div className="flex flex-col items-center sm:items-start gap-3">
               <span className="text-xs font-bold uppercase tracking-widest text-gray-400">{t('footerSocial')}</span>
               <div className="flex gap-4">
-                <a href="#" className="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 transition-colors">
+                <a href="https://www.instagram.com/najahmedia.ae" target='_blank' className="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 transition-colors">
                   <Instagram className="w-5 h-5 text-gray-500" />
                 </a>
-                <a href="#" className="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 transition-colors">
+                <a href="https://www.linkedin.com/company/najah-media/" target='_blank' className="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 transition-colors">
                   <Linkedin className="w-5 h-5 text-gray-500" />
-                </a>
-                <a href="#" className="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 transition-colors">
-                  <Twitter className="w-5 h-5 text-gray-500" />
                 </a>
               </div>
             </div>
@@ -1428,7 +1451,6 @@ const HomePage = ({ lang, setLang, t }) => {
               <span className="text-xs font-bold uppercase tracking-widest text-gray-400">{t('footerLegal')}</span>
               <a href="#" className="text-sm text-gray-500 hover:text-white transition-colors">{t('footerPrivacy')}</a>
               <a href="#" className="text-sm text-gray-500 hover:text-white transition-colors">{t('footerTerms')}</a>
-              <Link to="/admin" className="text-sm text-gray-700 hover:text-white transition-colors">Admin Portal</Link>
             </div>
           </div>
         </div>
