@@ -260,12 +260,12 @@ const Navbar = ({ lang, setLang, t }) => {
             )}
           </button>
 
-          <a
-            href="#signup"
-            className="hidden sm:block px-5 py-2.5 rounded-full bg-white text-black text-xs md:text-sm font-semibold hover:bg-opacity-90 transition-all shadow-xl shadow-white/5 active:scale-95"
+          <button
+            onClick={(e) => handleNavClick(e, 'signup')}
+            className="hidden sm:block px-5 py-2.5 rounded-full bg-white text-black text-xs md:text-sm font-semibold hover:bg-opacity-90 transition-all shadow-xl shadow-white/5 active:scale-95 cursor-pointer"
           >
             {t('navCTA')}
-          </a>
+          </button>
 
           <button
             onClick={() => setIsOpen(!isOpen)}
@@ -302,13 +302,12 @@ const Navbar = ({ lang, setLang, t }) => {
             </div>
 
             <div className="mt-auto space-y-8">
-              <a
-                href="#signup"
-                onClick={() => setIsOpen(false)}
-                className="block w-full py-5 rounded-2xl bg-gradient-to-r from-primary to-secondary text-white text-center text-xl font-bold shadow-2xl shadow-primary/20"
+              <button
+                onClick={(e) => handleNavClick(e, 'signup')}
+                className="block w-full py-5 rounded-2xl bg-gradient-to-r from-primary to-secondary text-white text-center text-xl font-bold shadow-2xl shadow-primary/20 cursor-pointer"
               >
                 {t('navCTA')}
-              </a>
+              </button>
 
               <div className="flex justify-center gap-8 py-6 border-t border-white/5 mt-8">
                 <a href="#" className="p-2 bg-white/5 rounded-full hover:bg-primary/20 transition-colors">
@@ -1119,6 +1118,16 @@ const AdminDashboard = ({ t }) => {
 // --- Landing Page Component ---
 
 const HomePage = ({ lang, setLang, t }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleNavClick = (e, sectionId) => {
+    e.preventDefault();
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
   return (
     <div
       className={`min-h-screen selection:bg-primary/30 ${lang === 'ar' ? 'font-sans-ar' : ''}`}
@@ -1210,24 +1219,24 @@ const HomePage = ({ lang, setLang, t }) => {
               }}
               className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6"
             >
-              <motion.a
-                href="#signup"
+              <motion.button
+                onClick={(e) => handleNavClick(e, 'signup')}
                 whileHover={{ scale: 1.05, boxShadow: '0 20px 40px -10px rgba(236, 78, 32, 0.4)' }}
                 whileTap={{ scale: 0.95 }}
-                className="group w-full sm:w-auto px-8 sm:px-10 py-4 sm:py-5 rounded-2xl bg-white text-black font-bold text-lg sm:text-xl transition-all flex items-center justify-center gap-3 relative overflow-hidden"
+                className="group w-full sm:w-auto px-8 sm:px-10 py-4 sm:py-5 rounded-2xl bg-white text-black font-bold text-lg sm:text-xl transition-all flex items-center justify-center gap-3 relative overflow-hidden cursor-pointer"
               >
                 <div className="absolute inset-0 bg-primary/5 translate-y-full group-hover:translate-y-0 transition-transform" />
                 <span className="relative z-10">{t('heroCTA1')}</span>
                 <ChevronRight className={`w-5 h-5 sm:w-6 sm:h-6 relative z-10 transition-transform group-hover:translate-x-1 ${lang === 'ar' ? 'rotate-180 group-hover:-translate-x-1' : ''}`} />
-              </motion.a>
-              <motion.a
-                href="#services"
+              </motion.button>
+              <motion.button
+                onClick={(e) => handleNavClick(e, 'services')}
                 whileHover={{ scale: 1.05, borderColor: 'rgba(255,255,255,0.4)' }}
                 whileTap={{ scale: 0.95 }}
-                className="w-full sm:w-auto px-8 sm:px-10 py-4 sm:py-5 rounded-2xl border border-white/10 bg-white/5 hover:bg-white/10 font-bold text-lg sm:text-xl transition-all text-center"
+                className="w-full sm:w-auto px-8 sm:px-10 py-4 sm:py-5 rounded-2xl border border-white/10 bg-white/5 hover:bg-white/10 font-bold text-lg sm:text-xl transition-all text-center cursor-pointer"
               >
                 {t('heroCTA2')}
-              </motion.a>
+              </motion.button>
             </motion.div>
           </motion.div>
 
@@ -1382,14 +1391,14 @@ const HomePage = ({ lang, setLang, t }) => {
               description={t('serv5Desc')}
               delay={0.5}
             />
-            <a
-              href="#contact"
+            <button
+              onClick={(e) => handleNavClick(e, 'contact')}
               className="p-8 rounded-3xl bg-gradient-to-br from-primary to-secondary flex flex-col items-center justify-center text-center gap-4 group cursor-pointer"
             >
               <h3 className="text-2xl font-bold font-display italic">{t('serv6Title')}</h3>
               <p className="text-white/80 text-sm">{t('serv6Desc')}</p>
               <ChevronRight className={`w-8 h-8 group-hover:translate-x-2 transition-transform ${lang === 'ar' ? '-scale-x-100 group-hover:-translate-x-2' : ''}`} />
-            </a>
+            </button>
           </div>
         </div>
       </section>
